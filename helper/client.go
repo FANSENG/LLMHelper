@@ -64,7 +64,6 @@ func (cli *Client) Post(uri string, args ...map[string]interface{}) (*request.Re
 	if _, ok := data["model"]; !ok {
 		data["model"] = cli.opts.Model
 	}
-
 	return cli.getRequestClient().Post(uri, data, headers)
 }
 

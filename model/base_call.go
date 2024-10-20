@@ -11,7 +11,7 @@ import (
 func BaseCall(request *ChatCompletionRequest) (ChatCompletionResponse, error) {
 	var response ChatCompletionResponse
 	resp, err := bridge.LLMClient.Post(config.ModeMap[request.Model].URI, helper.StructToMap(request))
-	if err != nil {
+	if resp == nil || err != nil {
 		return response, err
 	}
 	err = json.Unmarshal(resp.Raw(), &response)

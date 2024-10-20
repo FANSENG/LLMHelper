@@ -1,11 +1,14 @@
 package main
 
 import (
-	"log"
+	"context"
+	"fmt"
+
+	"github.com/sirupsen/logrus"
 
 	"fs1n/llmhelper/bridge"
 	"fs1n/llmhelper/config"
-	"fs1n/llmhelper/model"
+	"fs1n/llmhelper/method"
 )
 
 func init() {
@@ -17,15 +20,10 @@ func init() {
 }
 
 func main() {
-
-	resp, err := model.BaseCall(model.NewRequest("glm-4-flash", []model.Message{
-		{
-			Role:    "user",
-			Content: "Please write a 50-word story using apple, water, suck",
-		},
-	}))
+	story, err := method.GetStoryByWords(context.Background(), []string{"apple", "water", "wink", "black", "drink"})
 	if err != nil {
-		log.Fatalf("request api failed: %v", err)
+		logrus.Errorln(err)
+		return
 	}
-	log.Fatalf("message is: %s", resp.Choices[0].Message.Content)
+	logrus.Infoln(fmt.Sprintf("story is [%v]", story))
 }
