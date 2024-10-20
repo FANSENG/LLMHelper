@@ -1,0 +1,8 @@
+
+{
+    "glm-4-flash": {
+        "APIKEY": "",
+        "BaseURI": "https://open.bigmodel.cn",
+        "URI": "/api/paas/v4/chat/completions"
+    }
+}
