@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/openai/openai-go"
 	"github.com/sirupsen/logrus"
 
 	"fs1n/llmhelper/model"
@@ -19,7 +20,7 @@ func GetStoryByWords(ctx context.Context, wordList []string) (string, error) {
 		return "word count error", errors.New("wordList is empty or more than 10")
 	}
 	words := strings.Join(wordList, ",")
-	resp, err := model.BaseCall(model.NewRequest("glm-4-flash", []model.Message{
+	resp, err := model.BaseCall(ctx, model.NewRequest("glm-4-flash", []openai.ChatCompletionMessage{
 		{
 			Role:    "user",
 			Content: fmt.Sprintf(prompt, words, GetStoryWordCountByLen(len(wordList))),
@@ -29,7 +30,7 @@ func GetStoryByWords(ctx context.Context, wordList []string) (string, error) {
 		logrus.Errorln(fmt.Sprintf("GetStoryByWords err: %v", err))
 		return "call api failed", errors.New("call api failed")
 	}
-	return resp.Choices[0].Message.Content, nil
+	return resp.Content, nil
 }
 
 func GetStoryWordCountByLen(count int) int {

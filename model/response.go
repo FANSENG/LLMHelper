@@ -1,24 +1,19 @@
 package model
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"github.com/openai/openai-go"
+)
 
 type ChatCompletionResponse struct {
-	ID                string                `json:"id"`
-	Created           int64                 `json:"created"`
-	Model             string                `json:"model"`
-	RequestID         string                `json:"request_id"`
-	Choices           []Choice              `json:"choices"`
-	Usage             Usage                 `json:"usage"`
-	SystemFingerprint string                `json:"system_fingerprint,omitempty"`
-	ContentFilter     []ContentFilterResult `json:"content_filter,omitempty"`
-	WebSearch         []WebSearchResult     `json:"web_search,omitempty"`
+	Content string `json:"content"`
 }
 
 type Choice struct {
-	Index        int        `json:"index"`
-	Message      Message    `json:"message"`
-	FinishReason string     `json:"finish_reason"`
-	ToolCalls    []ToolCall `json:"tool_calls,omitempty"`
+	Index        int                          `json:"index"`
+	Message      openai.ChatCompletionMessage `json:"message"`
+	FinishReason string                       `json:"finish_reason"`
+	ToolCalls    []ToolCall                   `json:"tool_calls,omitempty"`
 }
 
 type Usage struct {

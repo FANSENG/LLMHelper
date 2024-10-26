@@ -9,7 +9,6 @@ import (
 type Config struct {
 	APIKEY  string `json:"APIKEY"`
 	BaseURI string `json:"BaseURI"`
-	URI     string `json:"URI"`
 }
 
 const (

@@ -1,22 +1,32 @@
 package model
 
 import (
-	"encoding/json"
+	"context"
+
+	"github.com/openai/openai-go"
 
 	"fs1n/llmhelper/bridge"
-	"fs1n/llmhelper/config"
-	"fs1n/llmhelper/helper"
 )
 
-func BaseCall(request *ChatCompletionRequest) (ChatCompletionResponse, error) {
+func BaseCall(ctx context.Context, request *ChatCompletionRequest) (ChatCompletionResponse, error) {
 	var response ChatCompletionResponse
-	resp, err := bridge.LLMClient.Post(config.ModeMap[request.Model].URI, helper.StructToMap(request))
-	if resp == nil || err != nil {
+
+	messages := []openai.ChatCompletionMessageParamUnion{}
+	for _, v := range request.Messages {
+		if v.Role == "user" {
+			messages = append(messages, openai.UserMessage(v.Content))
+		} else if v.Role == "assistant" {
+			messages = append(messages, openai.AssistantMessage(v.Content))
+		}
+	}
+
+	charCompletion, err := bridge.LLMClient.Chat.Completions.New(ctx, openai.ChatCompletionNewParams{
+		Messages: openai.F(messages),
+		Model:    openai.F(request.Model),
+	})
+	if charCompletion == nil || err != nil {
 		return response, err
 	}
-	err = json.Unmarshal(resp.Raw(), &response)
-	if err != nil {
-		return response, err
-	}
+	response.Content = charCompletion.Choices[0].Message.Content
 	return response, nil
 }
